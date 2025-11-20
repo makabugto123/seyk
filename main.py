@@ -1266,7 +1266,22 @@ async def main():
     
     
 if __name__ == "__main__":
+    import asyncio
+    
     # Flask keep-alive
-    threading.Thread(target=lambda: app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080))), daemon=True).start()
-    # Start bot with full power
-    asyncio.run(main())
+    threading.Thread(
+        target=lambda: app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080))),
+        daemon=True
+    ).start()
+    
+    print("BOT STARTING — RENDER 2025 FIX")
+    
+    # Force start polling (this is what was missing)
+    async def start_bot():
+        await application.initialize()
+        await application.start()
+        print("POLLING STARTED — BOT IS LISTENING")
+        await application.updater.start_polling(drop_pending_updates=True)
+        await asyncio.Event().wait()  # keep alive forever
+
+    asyncio.run(start_bot())
