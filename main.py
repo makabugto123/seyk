@@ -1265,7 +1265,6 @@ async def main():
     await asyncio.Event().wait()  # Keep alive
     
     
-import uvicorn
 if __name__ == "__main__":
     # Flask keep-alive
     threading.Thread(target=lambda: app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080))), daemon=True).start()
