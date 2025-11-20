@@ -1265,8 +1265,9 @@ async def main():
     await asyncio.Event().wait()  # Keep alive
     
     
+import uvicorn
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\n[SCRIPT] Stopped by user.")
+    # Flask keep-alive
+    threading.Thread(target=lambda: app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080))), daemon=True).start()
+    # Start bot with full power
+    asyncio.run(main())
