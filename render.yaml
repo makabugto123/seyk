@@ -2,11 +2,12 @@ services:
   - type: web
     name: cc-bot-nuclear
     env: python
-    region: singapore     # closest to PH = fastest ping
-    plan: pro-ultra       # ← change this line only
+    region: singapore
+    plan: pro-ultra                 # ← 32 GB RAM + 8 CPU monster
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --workers 8 --threads 20 --timeout 600 --bind 0.0.0.0:$PORT main:app
+    startCommand: python main.py    # ← MUST BE THIS (not gunicorn)
+    autoDeploy: true
     disk:
       name: data
       mountPath: /data
-      sizeGB: 10          # upgrade disk too so you can store millions of hits
+      sizeGB: 10                    # ← 10 GB persistent hits storage# upgrade disk too so you can store millions of hits
