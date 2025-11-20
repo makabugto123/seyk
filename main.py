@@ -10,15 +10,6 @@ if os.path.exists("/data"):
 else:
     DB_FILE = "bisayakol.db"
 
-# === KEEP-ALIVE PING (Render free tier) ===
-def keep_alive():
-    while True:
-        time.sleep(300)
-        try:
-            reqq.get(f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME') or 'your-bot.onrender.com'}")
-        except:
-            pass
-threading.Thread(target=keep_alive, daemon=True).start()
 
 # === DUMMY WEB SERVER SO RENDER DOESN'T KILL IT ===
 app = Flask(__name__)
@@ -1266,22 +1257,29 @@ async def main():
     
     
 if __name__ == "__main__":
-    import asyncio
-    
-    # Flask keep-alive
+    import threading
+    import os
+
+    # === 1. FLASK KEEP-ALIVE (Render stays awake) ===
     threading.Thread(
-        target=lambda: app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080))),
+        target=lambda: app.run(
+            host="0.0.0.0",
+            port=int(os.environ.get("PORT", 8080)),
+            use_reloader=False
+        ),
         daemon=True
     ).start()
-    
-    print("BOT STARTING — RENDER 2025 FIX")
-    
-    # Force start polling (this is what was missing)
-    async def start_bot():
-        await application.initialize()
-        await application.start()
-        print("POLLING STARTED — BOT IS LISTENING")
-        await application.updater.start_polling(drop_pending_updates=True)
-        await asyncio.Event().wait()  # keep alive forever
 
-    asyncio.run(start_bot())
+    print("FLASK ALIVE • RENDER 2025 • NOV 21")
+
+    # === 2. FORCE BOT TO START POLLING FIRST (THIS IS THE FIX) ===
+    print("STARTING TELEGRAM BOT — POLLING FIRST")
+    
+    try:
+        asyncio.run(main())   # This runs your main() with polling
+    except KeyboardInterrupt:
+        print("Bot stopped by emperor")
+    except Exception as e:
+        print(f"CRITICAL ERROR: {e}")
+        import traceback
+        traceback.print_exc()
