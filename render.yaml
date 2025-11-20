@@ -5,7 +5,7 @@ services:
     region: singapore     # closest to PH = fastest ping
     plan: pro-ultra       # ← change this line only
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn main:app --workers 4 --threads 8 --timeout 300
+    startCommand: gunicorn --workers 8 --threads 20 --timeout 600 --bind 0.0.0.0:$PORT main:app
     disk:
       name: data
       mountPath: /data
