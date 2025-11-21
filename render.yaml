@@ -1,13 +1,22 @@
 services:
-  - type: web
-    name: cc-bot-nuclear
+  - type: worker
+    name: cc-pro-ultra-2025
     env: python
     region: singapore
-    plan: pro-ultra                 # ← 32 GB RAM + 8 CPU monster
+    plan: pro ultra     # or pro-ultra if you pay $450+
     buildCommand: pip install -r requirements.txt
-    startCommand: python main.py    # ← MUST BE THIS (not gunicorn)
-    autoDeploy: true
+    startCommand: python main.py
+    numInstances: 1
     disk:
-      name: data
+      name: ultra-vault
       mountPath: /data
-      sizeGB: 10                    # ← 10 GB persistent hits storage# upgrade disk too so you can store millions of hits
+      sizeGB: 10
+    envVars:
+      YOUR_BOT_TOKEN:
+        value: "8435079339:AAGjDyIWrIbwq5v-Z6Qg6tfNQfF1cqiJMCY"
+      ADMIN_USER_ID:
+        value: "7307757609"
+      SELL_CHANNEL_ID:
+        value: "-1003288341144"
+      BOT_NAME:
+        value: "@ccscraps123_bot"
